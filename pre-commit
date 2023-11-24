@@ -1,0 +1,16 @@
+#!/bin/bash
+
+forbidden=$(git diff --cached --name-only | grep -E '\.js$|\.ts$')
+
+if [ -n "$forbidden" ]; then
+  files_with_pharses=$(grep -E '\.only|console\.|\b.skip\b' $forbidden)
+
+  if [ -n "$files_with_pharses" ]; then
+    echo $'ERROR: Found .only, .skip or console in the following files in: \n'
+    echo "$files_with_pharses"
+    echo $'\nPlease remove them before committing.'
+    exit 1
+  fi
+fi
+
+exit 0
